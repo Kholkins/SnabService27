@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" href="/static/pages/img/favicon.png" type="image/png">
+  <title>CнабСервис - вакансии</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Play&subset=latin,cyrillic">
+  <link rel="stylesheet" href="/static/pages/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="clearfix">
+        <div class="logo">
+          <img src="/static/pages/img/logo__header--snabservice.svg" width="137" height="35" alt="CнабСервис. Покупка черного лома">
+        </div>
+        <ul class="menu">
+          <li class="menu__item">
+            <a class="menu__link" href="/">Главная</a>
+          </li>
+          <li class="menu__item">
+            <a class="menu__link menu__link--services" href="/purchases/">Услуги</a>
+            <ul class="menu__modal-window">
+              <li class="menu__item menu__item--modal-window">
+                <a class="menu__link menu__link--modal-window" href="/purchases/">Покупка черного лома</a>
+              </li>
+              <li class="menu__item menu__item--modal-window">
+                <a class="menu__link menu__link--modal-window" href="/sales/">Продажа черного металлопроката</a>
+              </li>
+            </ul>
+          </li>
+          <li class="menu__item menu__item--active">
+            <a class="menu__link" href="/vacancies/">Вакансии</a>
+          </li>
+          <li class="menu__item">
+            <a class="menu__link" href="/contacts/">Контакты</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <section class="vacancies">
+      <div class="container">
+        <h1 class="page-title page-title--vacancies">Вакансии, актуальные на данный момент:</h1>
+        {% for vacancie in vacancies %}
+        {% autoescape off %}
+          <section class="vacancie">
+            <h2 class="vacancie__position">{{ vacancie.position }}</h2>
+            <ul class="vacancie__parameters">
+              <li class="vacancie__parameter">
+                <span class="vacancie__key">График:</span>
+                <span class="vacancie__value">{{ vacancie.schedule }}</span>
+              </li>
+              <li class="vacancie__parameter">
+                <span class="vacancie__key">Обязанности:</span>
+                <span class="vacancie__value">{{ vacancie.responsibility }}</span>
+              </li>
+              <li class="vacancie__parameter">
+                <span class="vacancie__key">Место работы:</span>
+                <span class="vacancie__value">{{ vacancie.work_place }}</span>
+              </li>
+              <li class="vacancie__parameter">
+                <span class="vacancie__key">Зарплата:</span>
+                <span class="vacancie__value">{{ vacancie.salary }}</span>
+              </li>
+            </ul>
+          </section>
+        {% endautoescape %}
+        {% endfor %}
+      </div>
+    </section>
+    <section class="form-section form-section--application" id="form-section">
+      <div class="container">
+        <h2 class="form-section__title">Оформление заявки на работу</h2>
+        {% for e in form.non_field_errors %}
+          <div class="form__alert">{{ e }}</div>
+        {% endfor %}
+        <form class="form-section__form form-section__form--application" id="form" action="/vacancies/#form-section" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <label class="form__label form__label--last-name {% if form.last_name.errors %}form__label--invalid{% endif %}" for="last-name">
+            <span class="form__text form__text--last-name">Фамилия *</span>
+            <input class="form__input form__input--last-name" id="last-name" name="last_name" type="text">
+          </label>
+          <label class="form__label form__label--first-name {% if form.first_name.errors %}form__label--invalid{% endif %}" for="first-name">
+            <span class="form__text form__text--first-name">Имя *</span>
+            <input class="form__input form__input--first-name" id="first-name" name="first_name" type="text">
+          </label>
+          <label class="form__label form__label--patronym {% if form.patronym.errors %}form__label--invalid{% endif %}" for="patronym">
+            <span class="form__text form__text--patronym">Отчество *</span>
+            <input class="form__input form__input--patronym" id="patronym" name="patronym" type="text">
+          </label>
+          <label class="form__label form__label--phone {% if form.phone.errors %}form__label--invalid{% endif %}" for="phone">
+            <span class="form__text form__text--phone">Телефон *</span>
+            <input class="form__input form__input--phone" id="phone" name="phone" type="text">
+          </label>
+          <label class="form__label form__label--email {% if form.email.errors %}form__label--invalid{% endif %}" for="email">
+            <span class="form__text form__text--email">E-mail *</span>
+            <input class="form__input form__input--email" id="email" name="email" type="text">
+          </label>
+          <label class="form__label form__label--city {% if form.city.errors %}form__label--invalid{% endif %}" for="city">
+            <span class="form__text form__text--city">Город</span>
+            <input class="form__input form__input--city" id="city" name="city" type="text">
+          </label>
+          <label class="form__label form__label--street {% if form.street.errors %}form__label--invalid{% endif %}" for="street">
+            <span class="form__text form__text--street">Улица</span>
+            <input class="form__input form__input--street" id="street" name="street" type="text">
+          </label>
+          <label class="form__label form__label--vacancie {% if form.vacancie.errors %}form__label--invalid{% endif %}" for="vacancie">
+            <span class="form__text form__text--vacancie">Вакансия *</span>
+            <select class="form__input form__input--vacancie" id="vacancie" name="vacancie">
+              <option value="none" selected disabled>Выберите из списка:</option>
+              {% for vacancie in vacancies %}
+                <option value="{{ vacancie.position }}">{{ vacancie.position }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <label class="form__label form__label--message {% if form.message.errors %}form__label--invalid{% endif %}" for="message">
+            <span class="form__text form__text--message">Сообщение</span>
+            <textarea class="form__input form__input--message" id="message" name="message"></textarea>
+          </label>
+          <label class="form__label form__label--documents">
+            <span class="form__text form__text--documents">Добавить файл</span>
+            <input class="form__input form__input--documents" name="document1" type="file">
+            <div class="form__input form__input--file"></div>
+          </label>
+          <label class="form__label form__label--acceptance {% if form.is_accepted.errors %}form__label--invalid{% endif %}" for="is_accepted">
+            <input class="form__input form__input--acceptance" type="checkbox" name="is_accepted">
+            <span class="form__text form__text--acceptance">Даю согласие на обработку персональных данных.</span>
+          </label>
+          <input class="btn btn--application" type="submit" value="Отправить">
+        </form>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <section class="contacts">
+      <div class="container clearfix">
+        <ul class="contacts__list contacts__list--main">
+          <li class="contacts__item contacts__item--main">
+            <span class="contacts__key contacts__key--main">Телефон:</span>
+            <div class="contacts__values-set">
+              <a class="contacts__value contacts__value--main" href="tel:89034112620">8 903 411-26-20</a>
+              <br>
+              <a class="contacts__value contacts__value--main" href="tel:88619442620">8 861 944 26 20</a>
+            </div>
+          </li>
+          <li class="contacts__item contacts__item--main">
+            <span class="contacts__key contacts__key--main">E-mail:</span>
+            <a class="contacts__value contacts__value--main" href="mailto:snabservis_llc@mail.ru">snabservis_llc@mail.ru</a>
+          </li>
+        </ul>
+        <ul class="contacts__list contacts__list--links">
+          <li class="contacts__item contacts__item--links">
+            <a class="contacts__link" href="/static/pages/img/doc__footer--requisites.pdf" target="blank_">Реквизиты ООО “СнабСервис”</a>
+          </li>
+          <li class="contacts__item contacts__item--links">
+            <a class="contacts__link" href="/static/pages/img/doc__footer--license.pdf" target="blank_">Лицензия ООО “СнабСервис”</a>
+          </li>
+          <li class="contacts__item contacts__item--links">
+            <a class="contacts__link" href="/static/pages/img/doc__footer--license_pril.pdf" target="blank_">Приложение к Лицензии</a>
+          </li>
+          <li class="contacts__item contacts__item--links">
+            <a class="contacts__link" href="/static/pages/img/doc__footer--contract.pdf" target="blank_">Договор на поставку сырья</a>
+          </li>
+        </ul>
+      </div>
+    </section>
+    <section class="copyright">
+      <div class="container clearfix">
+        <p class="copyright__text copyright__text--snabservice">ООО “СнабСервис” 2017. Все права защищены.</p>
+        <p class="copyright__text copyright__text--julo">разработано <a class="copyright__text--julo-title" href="http://startjulo.ru/" target="blank_">Julo</a></p>
+      </div>
+    </section>
+  </footer>
+  <script src="/static/pages/js/script__vacancies.js"></script>
+</body>
+</html>
